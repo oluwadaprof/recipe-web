@@ -8,19 +8,14 @@ const Cuisine = () => {
     let params= useParams();
 
     const getCuisine = async (name) => {
-        let isMounted = true
         const data = await fetch(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${process.env.REACT_APP_API_KEY}&cuisine=${name}`)
         const recipes = await data.json()
-        if(isMounted){
-            setCuisine(recipes?.results)
-        }
+        setCuisine(recipes.results)
     }
 
     useEffect(()=>{
         getCuisine(params.type)
-        return() => {
-            isMounted = false
-        }
+        console.log(params.type)
     },[params.type])
 
   return (
