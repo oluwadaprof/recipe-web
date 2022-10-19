@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
+import { motion } from "framer-motion";
 
 const Recipe = () => {
   let params = useParams();
@@ -13,14 +14,19 @@ const Recipe = () => {
     );
     const detailData = await data.json();
     setDetails(detailData);
-    console.log(detailData)
+    console.log(detailData);
   };
 
   useEffect(() => {
     fecthDetails();
   }, [params.name]);
   return (
-    <DetailWrapper>
+    <DetailWrapper
+      animate={{ opacity: 1 }}
+      inital={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+    >
       <div>
         <h2>{details.title}</h2>
         <img src={details.image} alt="" />
@@ -38,21 +44,25 @@ const Recipe = () => {
         >
           Ingredients
         </Button>
-        <div>
-            <h3 dangerouslySetInnerHTML={{__html: details.summary}} ></h3>
-            <h3 dangerouslySetInnerHTML={{__html: details.instructions}} ></h3>
-        </div>
-        <ul>
-            {details.extendedIngredients.map((ingredient)=>{
-                <li key={ingredient.id} >{ingredient.original}</li>
-            })}
-        </ul>
+        {activeTab === "Instructions" && (
+          <div>
+            <h3 dangerouslySetInnerHTML={{ __html: details.summary }}></h3>
+            <h3 dangerouslySetInnerHTML={{ __html: details.instructions }}></h3>
+          </div>
+        )}
+        {activeTab === "Ingredients" && (
+          <ul>
+            {details.extendedIngredients.map((ingredient) => (
+              <li key={ingredient.id}>{ingredient.original}</li>
+            ))}
+          </ul>
+        )}
       </Info>
     </DetailWrapper>
   );
 };
 
-const DetailWrapper = styled.div`
+const DetailWrapper = styled(motion.div)`
   margin-top: 10rem;
   margin-bottom: 5rem;
   display: flex;
@@ -86,7 +96,7 @@ const Button = styled.button`
   border: 2px solid black;
   margin-right: 2rem;
   font-weight: 600;
-  &:hover{
+  &:hover {
     cursor: pointer;
   }
 `;
@@ -94,6 +104,7 @@ const Button = styled.button`
 const Info = styled.div`
   margin-left: 10rem;
   width: 100%;
+  height: 150rem;
 `;
 
 export default Recipe;
